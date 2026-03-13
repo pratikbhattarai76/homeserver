@@ -5,7 +5,7 @@ services:
     image: vaultwarden/server:latest
     restart: unless-stopped
     environment:
-      - SIGNUPS_ALLOWED=true
+      - SIGNUPS_ALLOWED=false
       - DOMAIN=https://vault.pratik-labs.xyz
     volumes:
       - ./vw-data:/data
