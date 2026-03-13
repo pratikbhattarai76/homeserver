@@ -1,12 +1,19 @@
 version: '3.8'
 services:
   app:
-    image: 'jc21/nginx-proxy-manager:2.14.0'
+    container_name: nginx-proxy-manager
+    image: 'jc21/nginx-proxy-manager:latest'
     restart: unless-stopped
     ports:
-      - '80:80'   # Public HTTP
-      - '81:81'   # Admin UI
-      - '443:443' # Public HTTPS
+      - '80:80'
+      - '81:81'
+      - '443:443'
     volumes:
       - ./data:/data
-      - ./letsencrypt:/etc/letsencrypt #SSL Certificates
+      - ./letsencrypt:/etc/letsencrypt
+    networks:
+      - docker-proxy
+
+networks:
+  docker-proxy:
+    external: true
