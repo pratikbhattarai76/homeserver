@@ -1,8 +1,14 @@
 # homeserver
 Professional Home Lab Infrastructure as Code
 
-## 1. Storage Configuration
-The 1TB HDD is used for persistent data storage.
+## 🖥️ Hardware Speds
+- **CPU:** Intel i7-4770
+- **RAM:** 16GB DDR3
+- **System Drive:** 120GB SSD
+- **Data Drive:** 1TB HDD
+
+## 1. Storage Strategy & Configuration
+To optimize performance, the OS and Docker configurations live on the SSD while, the 1TB HDD is used for data storage.
 
 - **Device:** `/dev/sda1`
 - **UUID:** `4250e634-f248-4591-b2b0-6d12919f6c8e`
@@ -22,3 +28,4 @@ The 1TB HDD is used for persistent data storage.
 ### 2.1 Installation verification:
 -`docker --version`
 -`docker compose version`
+
