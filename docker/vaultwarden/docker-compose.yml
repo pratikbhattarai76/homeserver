@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  vaultwarden:
+    container_name: vaultwarden
+    image: vaultwarden/server:latest
+    restart: unless-stopped
+    environment:
+      - SIGNUPS_ALLOWED=true
+      - DOMAIN=https://vault.pratik-labs.xyz
+    volumes:
+      - ./vw-data:/data
+    networks:
+      - docker-proxy
+
+networks:
+  docker-proxy:
+    external: true
