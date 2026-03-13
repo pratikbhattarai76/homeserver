@@ -23,7 +23,7 @@ To optimize performance, the OS and Docker configurations live on the SSD while,
 ## 2. Container Environment
 - **Engine:** Docker Engine
 - **Orchestration:** Docker Compose
-= **User Permissions:** `pratikserver` added to `docker` group.
+- **User Permissions:** `pratikserver` added to `docker` group.
 
 ### 2.1 Installation verification:
 -`docker --version`
