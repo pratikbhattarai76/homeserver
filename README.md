@@ -48,6 +48,10 @@ This infrastructure follows a **Zero Trust** model. No ports are opened on the l
 ```bash
 docker network create docker-proxy
 ```
+### 3.2 Identity-Aware Access Control
+- **Tool:** Cloudflare Access (Zero Trust)
+- **Policy:** Restricted to authorized email via One-Time PIN (OTP).
+- **Result:** Management UI (`proxy.pratik-labs.xyz`) is hidden behind an identity wall, providing MFA for the infrastructure.
 
 ---
 
