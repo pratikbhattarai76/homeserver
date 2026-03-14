@@ -81,3 +81,11 @@ To maintain industry standards, this project follows a strict **"Infrastructure 
 *   **Secret Management:** Secrets (Tokens/Passwords) are stored in `.env` files and strictly blocked from GitHub via `.gitignore`.
 *   **Syncing:** Configurations are moved from the local workstation to the production server via `scp`.
 *   **Deployment:** Services are managed via SSH using `docker compose up -d` for orchestration.
+
+## 7. Remote File Management
+To maintain a minimal attack surface, file management is handled via **SFTP** (SSH File Transfer Protocol) instead of Samba.
+
+- **Protocol:** SFTP (via SSH Port 22)
+- **Mount Point:** `sftp://pratikserver@192.168.1.250/mnt/storage`
+- **Integration:** Integrated into Arch KDE Plasma via Dolphin Places.
+- **Security:** Uses Ed25519 SSH Keys for passwordless, encrypted data transfer.
