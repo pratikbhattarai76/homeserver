@@ -24,8 +24,7 @@ services:
       - nextcloud-db
     volumes:
       - ./nextcloud-config:/var/www/html
-      # Logic: Your HDD Photos mapped directly into Nextcloud's file system
-      - /mnt/storage/Photos/Pictures:/var/www/html/data/${NC_ADMIN_USER}/files/Pictures 
+     # - /mnt/storage/Photos/Pictures:/var/www/html/data/${NC_ADMIN_USER}/files/Pictures
     environment:
       - MYSQL_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=nextcloud
