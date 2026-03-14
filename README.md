@@ -20,9 +20,9 @@ To optimize performance, the OS and Docker configurations live on the SSD while,
 - **Filesystem:** `ext4`
 
 ### 1.1 How It Was Configured:
-1. Created Mount Point: `sudo mkdir -p /mnt/storage`
-2. Added to `/etc/fstab` for persistence: `UUID=4250e634-f248-4591-b2b0-6d12919f6c8e  /mnt/storage  ext4  defaults  0  2`
-3. Set Ownership: `sudo chown -R pratikserver:pratikserver /mnt/storage`
+- Created Mount Point: `sudo mkdir -p /mnt/storage`
+- Added to `/etc/fstab` for persistence: `UUID=4250e634-f248-4591-b2b0-6d12919f6c8e  /mnt/storage  ext4  defaults  0  2`
+- Set Ownership: `sudo chown -R pratikserver:pratikserver /mnt/storage`
 
 ---
 
@@ -72,15 +72,26 @@ Nginx Proxy Manager (NPM) is used as a Reverse Proxy to route incoming traffic f
 - **Persistence:** Database stored on SSD (`./vw-data`) for high-performance I/O.
 - **Security:** `SIGNUPS_ALLOWED=false` (Disabled after initial admin account creation).
 
+### 5.2 Nextcloud
+- **Subdomain:** `cloud.pratik-labs.xyz`
+- **Database:** MariaDB `lts-ubi9` (Enterprise-grade Red Hat UBI based image).
+- **Collaborative Storage:** Implemented a shared 'FamilyUploads' directory within the Pictures mount. 
+- **Hybrid Storage Strategy:** 
+    - **Performance Layer (SSD):** Application core, metadata, and image thumbnails are stored on the SSD for a responsive user interface.
+    - **Capacity Layer (HDD):** The 1TB HDD directory `/mnt/storage/Photos/Pictures` is mapped via a **Docker Bind Mount** directly into the user's data directory.
+- **Protocol Abstraction:** Utilizes MariaDB as a "drop-in replacement" for MySQL, configuring connectivity via `MYSQL_` environment variables.
+
 ---
 
 ## 6. DevOps Workflow
 To maintain industry standards, this project follows a strict **"Infrastructure as Code"** workflow:
 
-*   **Code on Arch Laptop:** All YAML and configuration files are written and tested locally.
-*   **Secret Management:** Secrets (Tokens/Passwords) are stored in `.env` files and strictly blocked from GitHub via `.gitignore`.
-*   **Syncing:** Configurations are moved from the local workstation to the production server via `scp`.
-*   **Deployment:** Services are managed via SSH using `docker compose up -d` for orchestration.
+-   **Code on Arch Laptop:** All YAML and configuration files are written and tested locally.
+-   **Secret Management:** Secrets (Tokens/Passwords) are stored in `.env` files and strictly blocked from GitHub via `.gitignore`.
+-   **Syncing:** Configurations are moved from the local workstation to the production server via `scp`.
+-   **Deployment:** Services are managed via SSH using `docker compose up -d` for orchestration.
+
+---
 
 ## 7. Remote File Management
 To maintain a minimal attack surface, file management is handled via **SFTP** (SSH File Transfer Protocol) instead of Samba.
@@ -89,3 +100,22 @@ To maintain a minimal attack surface, file management is handled via **SFTP** (S
 - **Mount Point:** `sftp://pratikserver@192.168.1.250/mnt/storage`
 - **Integration:** Integrated into Arch KDE Plasma via Dolphin Places.
 - **Security:** Uses Ed25519 SSH Keys for passwordless, encrypted data transfer.
+
+---
+
+## 8. Hybrid Storage Logic
+A key architectural decision was the "Decoupled Storage" model. 
+
+- **The Portal Concept:** Using Docker volumes, I created a "portal" between the physical 1TB HDD and the Nextcloud internal filesystem.
+- **Path Mapping:** 
+   `Host: /mnt/storage/Photos/Pictures` → `Container: /var/www/html/data/pratikbhattarai76/files/Pictures`
+- **Outcome:** Large media files remain on the high-capacity HDD, while the database and cache stay on the SSD. This provides the speed of an SSD with the 1TB capacity of the HDD.
+
+---
+
+## 9. Security & Identity Handshake
+- **Secrets Management:** No passwords or tokens are stored in plain text within the repository. The `${VARIABLE}` syntax in Docker Compose pulls values from a local-only `.env` file.
+- **IAP (Identity-Aware Proxy):** The infrastructure utilizes Cloudflare Access as an authentication layer. Users must pass a multi-factor email verification before traffic is allowed to reach the internal NGINX Proxy.
+- **Service Isolation:** Each application is isolated within its own container, and only the Reverse Proxy is allowed to communicate with the Cloudflare Tunnel.
+
+---
