@@ -5,7 +5,6 @@ services:
     image: portainer/portainer:latest
     container_name: portainer
     restart: unless-stopped
-    security_label: disable
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./data:/data
