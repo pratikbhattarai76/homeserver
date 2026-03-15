@@ -81,9 +81,39 @@ Nginx Proxy Manager (NPM) is used as a Reverse Proxy to route incoming traffic f
     - **Capacity Layer (HDD):** The 1TB HDD directory `/mnt/storage/Photos/Pictures` is mapped via a **Docker Bind Mount** directly into the user's data directory.
 - **Protocol Abstraction:** Utilizes MariaDB as a "drop-in replacement" for MySQL, configuring connectivity via `MYSQL_` environment variables.
 
+### 5.3 Portainer
+- **Subdomain:** `portainer.pratik-labs.xyz`
+- **Purpose:** GUI-based Docker orchestration and management.
+- **Security:** Integrated with the host's `/var/run/docker.sock` to provide real-time control over the container environment. Restricted via Cloudflare Access identity verification.
+
+### 5.4 Monitoring & Observability Stack (Prometheus & Grafana)
+- **Subdomain:** `monitor.pratik-labs.xyz`
+- **Architecture:** 
+    - **Prometheus:** Acts as the Time Series Database (TSDB) collecting metrics.
+    - **Node Exporter:** Captures host hardware metrics (CPU, RAM, Disk I/O).
+    - **cAdvisor:** Captures per-container resource usage.
+    - **Grafana:** Provides visual dashboards (Utilizing Community IDs `1860` and `19908`).
+- **Network Strategy:** Internal-only isolation. Metrics are scraped over the `docker-proxy` network; no telemetry ports are exposed to the public internet.
+
+### 5.5 Uptime Kuma
+- **Subdomain:** `status.pratik-labs.xyz`
+- **Monitoring Strategy:** 
+    - **Docker Socket Integration:** Direct process monitoring for critical containers
+    - **Push Notifications:** (Planned) Integrated alerting via Gotify/Discord for instant downtime alerts.
+
 ---
 
-## 6. DevOps Workflow
+## 6. System Hardening & Firewall
+To maintain a "Silent Server" profile, the host utilizes a strict firewall configuration:
+- **UFW (Uncomplicated Firewall):** Configured to `Default Deny Incoming`. 
+- **Allowed Traffic:** 
+    - Port `22/tcp` (SSH) restricted to local and Tailscale interfaces.
+    - Full access via `tailscale0` for secure remote management.
+- **Zero-Port Exposure:** No web ports (80/443) are opened on the router; all traffic is handled via an outbound-only Cloudflare Tunnel.
+
+---
+
+## 7. DevOps Workflow
 To maintain industry standards, this project follows a strict **"Infrastructure as Code"** workflow:
 
 -   **Code on Arch Laptop:** All YAML and configuration files are written and tested locally.
@@ -93,7 +123,7 @@ To maintain industry standards, this project follows a strict **"Infrastructure 
 
 ---
 
-## 7. Remote File Management
+## 8. Remote File Management
 To maintain a minimal attack surface, file management is handled via **SFTP** (SSH File Transfer Protocol) instead of Samba.
 
 - **Protocol:** SFTP (via SSH Port 22)
@@ -103,7 +133,7 @@ To maintain a minimal attack surface, file management is handled via **SFTP** (S
 
 ---
 
-## 8. Hybrid Storage Logic
+## 9. Hybrid Storage Logic
 A key architectural decision was the "Decoupled Storage" model. 
 
 - **The Portal Concept:** Using Docker volumes, I created a "portal" between the physical 1TB HDD and the Nextcloud internal filesystem.
@@ -113,7 +143,7 @@ A key architectural decision was the "Decoupled Storage" model.
 
 ---
 
-## 9. Security & Identity Handshake
+## 10. Security & Identity Handshake
 - **Secrets Management:** No passwords or tokens are stored in plain text within the repository. The `${VARIABLE}` syntax in Docker Compose pulls values from a local-only `.env` file.
 - **IAP (Identity-Aware Proxy):** The infrastructure utilizes Cloudflare Access as an authentication layer. Users must pass a multi-factor email verification before traffic is allowed to reach the internal NGINX Proxy.
 - **Service Isolation:** Each application is isolated within its own container, and only the Reverse Proxy is allowed to communicate with the Cloudflare Tunnel.
