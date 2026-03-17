@@ -13,7 +13,11 @@ services:
       - ./letsencrypt:/etc/letsencrypt
     networks:
       - docker-proxy
+      - docker-cloudflared
 
 networks:
   docker-proxy:
+    external: true
+
+  docker-cloudflared:
     external: true

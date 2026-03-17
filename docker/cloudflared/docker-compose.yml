@@ -6,8 +6,8 @@ services:
     restart: unless-stopped
     command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
     networks:
-      - docker-proxy
+      - docker-cloudflared
 
 networks:
-  docker-proxy:
+  docker-cloudflared:
     external: true
