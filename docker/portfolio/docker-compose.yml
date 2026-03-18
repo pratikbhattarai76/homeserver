@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  portfolio:
+    image: pratikbhattarai76/portfolio-app:latest
+    container_name: portfolio-app
+    restart: unless-stopped
+    networks:
+      - docker-proxy
+
+networks:
+  docker-proxy:
+    external: true
