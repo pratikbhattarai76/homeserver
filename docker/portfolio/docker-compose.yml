@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   portfolio-app:
-    image: pratikbhattarai76/portfolio-app:1.0
+    image: pratikbhattarai76/portfolio-app:latest
     container_name: portfolio-app
     restart: unless-stopped
     env_file:
