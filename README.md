@@ -1,151 +1,208 @@
-# 🏠 Home Server Infrastructure
-**A Professional, private cloud infrastructure built with a focus on Zero Trust networking, Infrastructure as Code, and Security.**
+# 🏠 Private Cloud Infrastructure
 
-## 🖥️ Hardware Specs
-- **Model:** Custom
+A self-hosted private cloud and homelab infrastructure project focused on secure remote access, containerized service deployment, reverse-proxy-based ingress, and observability.
+
+## Architecture Diagram
+
+![Pratik-Labs Architecture](docs/architecture.png)
+
+## Overview
+
+This project documents my home server infrastructure, built to practice real-world DevOps and cloud engineering concepts in a self-hosted environment. The stack is centered around Docker Compose, Cloudflare Tunnel, Nginx Proxy Manager, internal Docker networking, and persistent storage design across SSD and HDD tiers.
+
+The environment is designed around a zero-open-port model for public ingress, with Cloudflare handling the public edge and tunnel connectivity while internal services remain isolated behind Docker networks and reverse proxy routing.
+
+## Hardware & Environment
+
+- **Host:** Custom Home Server
 - **CPU:** Intel i7-4770
 - **RAM:** 16GB DDR3
 - **System Drive:** 120GB SSD
 - **Data Drive:** 1TB HDD
-- **OS:** Ubuntu Server 22.04 LTS
+- **OS:** Ubuntu Server 24.04 LTS
+- **Admin Workstation:** Arch Linux Laptop
 
----
+## Core Architecture
 
-## 1. Storage Strategy & Configuration
-To optimize performance, the OS and Docker configurations live on the SSD while, the 1TB HDD is used for data storage.
+### Ingress & Access
+- **Domain:** `pratik-labs.xyz`
+- **DNS Provider / Edge:** Cloudflare
+- **Public Ingress:** Cloudflare Tunnel (`cloudflared`)
+- **Identity Layer:** Cloudflare Access
+- **Reverse Proxy:** Nginx Proxy Manager
 
-- **Device:** `/dev/sda1`
-- **UUID:** `4250e634-f248-4591-b2b0-6d12919f6c8e`
-- **Mount Point:** `/mnt/storage`
-- **Filesystem:** `ext4`
-
-### 1.1 How It Was Configured:
-- Created Mount Point: `sudo mkdir -p /mnt/storage`
-- Added to `/etc/fstab` for persistence: `UUID=4250e634-f248-4591-b2b0-6d12919f6c8e  /mnt/storage  ext4  defaults  0  2`
-- Set Ownership: `sudo chown -R pratikserver:pratikserver /mnt/storage`
-
----
-
-## 2. Container Environment
-- **Engine:** Docker Engine
+### Container Platform
+- **Container Runtime:** Docker Engine
 - **Orchestration:** Docker Compose
-- **User Permissions:** `pratikserver` added to `docker` group.
+- **Service Networking:** Docker bridge networks with internal DNS-based service discovery
 
-### 2.1 Installation verification:
-- `docker --version`
-- `docker compose version`
+### Private Administration
+- **Remote Management:** Tailscale + SSH
+- **File Access:** SFTP over SSH
+- **Firewall:** UFW with restricted management access
 
----
+## Network Design
 
-## 3. Networking & Security
-This infrastructure follows a **Zero Trust** model. No ports are opened on the local router; all ingress traffic is handled via an encrypted tunnel.
+The infrastructure follows a private-by-default design:
 
-- **Network Isolation:** A dedicated Docker bridge network `docker-proxy` handles inter-container communication.
-- **Service Discovery:** Containers communicate via internal Docker DNS (Service Names) rather than static IPs.
-- **External Access:** Cloudflare Tunnel (`cloudflared`) connects the local `docker-proxy` network to the Cloudflare Edge.
+- No public router port forwarding for application traffic
+- Public access is handled through an outbound-only Cloudflare Tunnel
+- Internal services communicate over Docker networks using service names instead of static IPs
+- Administrative interfaces are additionally protected with Cloudflare Access where appropriate
 
-### 3.1 Network Setup:
-```bash
-docker network create docker-proxy
+### Docker Networks
+- **`docker-cloudflared`**: tunnel-facing network for ingress handoff
+- **`docker-proxy`**: internal application network for reverse proxy routing and inter-service communication
+
+## Deployed Services
+
+### Cloudflare Tunnel
+Provides secure outbound tunnel connectivity between the home server and Cloudflare, allowing public access to internal services without exposing router ports.
+
+### Nginx Proxy Manager
+Acts as the internal reverse proxy and hostname-based traffic router for all web services. It handles service routing and centralizes ingress management behind the Cloudflare tunnel.
+
+### Nextcloud
+Self-hosted private cloud platform used for centralized file and photo access.
+
+- Reverse-proxied through `cloud.pratik-labs.xyz`
+- Backed by a dedicated MariaDB container
+- Uses hybrid storage:
+  - **SSD tier** for application state, database-backed metadata, and responsive UI operations
+  - **HDD tier** for large photo/media storage mounted from `/mnt/storage`
+
+### MariaDB
+Dedicated database backend for Nextcloud, running as a separate persistent containerized service.
+
+### Vaultwarden
+Self-hosted Bitwarden-compatible password manager.
+
+- Reverse-proxied through `vault.pratik-labs.xyz`
+- Public signups disabled
+- Persistent application data stored on SSD-backed storage
+
+### Portfolio Application
+Containerized personal portfolio service deployed from a separate application repository and pulled as a prebuilt Docker image.
+
+### Uptime Kuma
+Endpoint-based service monitoring for public-facing applications and internal availability checks.
+
+- Reverse-proxied through `status.pratik-labs.xyz`
+- Used primarily for HTTPS-based monitoring of real service availability
+
+### Prometheus
+Metrics collection and time-series storage for infrastructure observability.
+
+### Grafana
+Visualization layer for infrastructure dashboards powered by Prometheus metrics.
+
+### Node Exporter
+Provides host-level metrics such as CPU, RAM, disk, and system performance data.
+
+### cAdvisor
+Provides container-level resource metrics for Docker workloads.
+
+### Portainer
+Web-based Docker management interface used for operational convenience and quick inspection of running services.
+
+## Storage Design
+
+The server uses a hybrid storage model to balance performance and capacity.
+
+### SSD Tier
+Used for:
+- Ubuntu OS
+- Docker service state
+- Container Data Directories
+- Databases
+- Monitoring State
+- Configuration-heavy Workloads
+
+### HDD Tier
+Used for:
+- Large photo/media storage
+- Bulk file storage mounted under `/mnt/storage`
+
+### Storage Strategy
+This design keeps latency-sensitive application state on SSD while offloading large user media to the HDD. In particular, Nextcloud uses both tiers: its application and metadata-related state remain on SSD, while large photo storage is mapped from the HDD into the container.
+
+## Security Model
+
+Security is a major design focus of this environment.
+
+- **No public router exposure** for application traffic
+- **Cloudflare Tunnel** used for secure ingress
+- **Cloudflare Access** used to protect management interfaces
+- **UFW** configured with a restrictive default policy
+- **SSH key authentication** used for remote administration
+- **Secrets kept out of Git** through local `.env` files and `.gitignore`
+- **Container isolation** enforced through Docker networks and service separation
+
+## Operations Workflow
+
+This project follows a simple infrastructure workflow:
+
+1. Configuration is written and updated locally on the Arch Linux workstation
+2. Changes are tracked in GitHub
+3. Configuration is synchronized to the Ubuntu server
+4. Services are deployed and updated with Docker Compose over SSH
+
+This keeps the infrastructure reproducible, version-controlled, and easy to evolve over time.
+
+## Repository Structure
+
+```text
+.
+├── docker
+│   ├── cloudflared
+│   │   └── docker-compose.yml
+│   ├── monitoring
+│   │   ├── docker-compose.yml
+│   │   └── prometheus
+│   │       └── prometheus.yml
+│   ├── nextcloud
+│   │   └── docker-compose.yml
+│   ├── nginx-proxy-manager
+│   │   └── docker-compose.yml
+│   ├── portainer
+│   │   └── docker-compose.yml
+│   ├── portfolio
+│   │   └── docker-compose.yml
+│   ├── uptime-kuma
+│   │   └── docker-compose.yml
+│   └── vaultwarden
+│       └── docker-compose.yml
+├── docs
+│   ├── architecture.drawio
+│   └── architecture.png
+└── README.md
+
 ```
-### 3.2 Identity-Aware Access Control
-- **Tool:** Cloudflare Access (Zero Trust)
-- **Policy:** Restricted to authorized email via One-Time PIN (OTP).
-- **Result:** Management UI (`proxy.pratik-labs.xyz`) is hidden behind an identity wall, providing MFA for the infrastructure.
+## Key Learning Areas
 
----
+This project helps me practice and demonstrate:
 
-## 4. Traffic Management
-Nginx Proxy Manager (NPM) is used as a Reverse Proxy to route incoming traffic from the tunnel to the correct application.
+- Docker and Docker Compose
+- Teverse proxy Design
+- Cloudflare Tunnel and Private Ingress
+- Internal Service Networking
+- Persistent Container Storage
+- Monitoring and Observability
+- Linux Server Administration
+- Zero-trust-oriented Remote Access Patterns
+- Self-hosted Service Operations
 
-- **Admin Subdomain:** `proxy.pratik-labs.xyz`
-- **Internal Route:** `http://proxy:81`
-- **Features:** SSL management, Access Lists, and custom headers.
+## Future Improvements
 
----
+Planned next steps for the project include:
 
-## 5. Deployed Services
+- Automated backup and restore procedures
+- CI/CD for containerized application deployment
+- Improved alerting and notification integrations
+- Pinned image versions and update strategy improvements
+- Terraform and cloud-based infrastructure projects to extend beyond the homelab
 
-### 5.1 Vaultwarden (Password Manager)
-- **Subdomain:** `vault.pratik-labs.xyz`
-- **Description:** Lightweight Bitwarden-compatible server.
-- **Persistence:** Database stored on SSD (`./vw-data`) for high-performance I/O.
-- **Security:** `SIGNUPS_ALLOWED=false` (Disabled after initial admin account creation).
+## Notes
 
-### 5.2 Nextcloud
-- **Subdomain:** `cloud.pratik-labs.xyz`
-- **Database:** MariaDB `lts-ubi9` (Enterprise-grade Red Hat UBI based image).
-- **Collaborative Storage:** Implemented a shared 'FamilyUploads' directory within the Pictures mount. 
-- **Hybrid Storage Strategy:** 
-    - **Performance Layer (SSD):** Application core, metadata, and image thumbnails are stored on the SSD for a responsive user interface.
-    - **Capacity Layer (HDD):** The 1TB HDD directory `/mnt/storage/Photos/Pictures` is mapped via a **Docker Bind Mount** directly into the user's data directory.
-- **Protocol Abstraction:** Utilizes MariaDB as a "drop-in replacement" for MySQL, configuring connectivity via `MYSQL_` environment variables.
-
-### 5.3 Portainer
-- **Subdomain:** `portainer.pratik-labs.xyz`
-- **Purpose:** GUI-based Docker orchestration and management.
-- **Security:** Integrated with the host's `/var/run/docker.sock` to provide real-time control over the container environment. Restricted via Cloudflare Access identity verification.
-
-### 5.4 Monitoring & Observability Stack (Prometheus & Grafana)
-- **Subdomain:** `monitor.pratik-labs.xyz`
-- **Architecture:** 
-    - **Prometheus:** Acts as the Time Series Database (TSDB) collecting metrics.
-    - **Node Exporter:** Captures host hardware metrics (CPU, RAM, Disk I/O).
-    - **cAdvisor:** Captures per-container resource usage.
-    - **Grafana:** Provides visual dashboards (Utilizing Community IDs `1860` and `19908`).
-- **Network Strategy:** Internal-only isolation. Metrics are scraped over the `docker-proxy` network; no telemetry ports are exposed to the public internet.
-
-### 5.5 Uptime Kuma
-- **Subdomain:** `status.pratik-labs.xyz`
-- **Monitoring Strategy:** 
-    - **Docker Socket Integration:** Direct process monitoring for critical containers
-    - **Push Notifications:** (Planned) Integrated alerting via Gotify/Discord for instant downtime alerts.
-
----
-
-## 6. System Hardening & Firewall
-To maintain a "Silent Server" profile, the host utilizes a strict firewall configuration:
-- **UFW (Uncomplicated Firewall):** Configured to `Default Deny Incoming`. 
-- **Allowed Traffic:** 
-    - Port `22/tcp` (SSH) restricted to local and Tailscale interfaces.
-    - Full access via `tailscale0` for secure remote management.
-- **Zero-Port Exposure:** No web ports (80/443) are opened on the router; all traffic is handled via an outbound-only Cloudflare Tunnel.
-
----
-
-## 7. DevOps Workflow
-To maintain industry standards, this project follows a strict **"Infrastructure as Code"** workflow:
-
--   **Code on Arch Laptop:** All YAML and configuration files are written and tested locally.
--   **Secret Management:** Secrets (Tokens/Passwords) are stored in `.env` files and strictly blocked from GitHub via `.gitignore`.
--   **Syncing:** Configurations are moved from the local workstation to the production server via `scp`.
--   **Deployment:** Services are managed via SSH using `docker compose up -d` for orchestration.
-
----
-
-## 8. Remote File Management
-To maintain a minimal attack surface, file management is handled via **SFTP** (SSH File Transfer Protocol) instead of Samba.
-
-- **Protocol:** SFTP (via SSH Port 22)
-- **Mount Point:** `sftp://pratikserver@192.168.1.250/mnt/storage`
-- **Integration:** Integrated into Arch KDE Plasma via Dolphin Places.
-- **Security:** Uses Ed25519 SSH Keys for passwordless, encrypted data transfer.
-
----
-
-## 9. Hybrid Storage Logic
-A key architectural decision was the "Decoupled Storage" model. 
-
-- **The Portal Concept:** Using Docker volumes, I created a "portal" between the physical 1TB HDD and the Nextcloud internal filesystem.
-- **Path Mapping:** 
-   `Host: /mnt/storage/Photos/Pictures` → `Container: /var/www/html/data/pratikbhattarai76/files/Pictures`
-- **Outcome:** Large media files remain on the high-capacity HDD, while the database and cache stay on the SSD. This provides the speed of an SSD with the 1TB capacity of the HDD.
-
----
-
-## 10. Security & Identity Handshake
-- **Secrets Management:** No passwords or tokens are stored in plain text within the repository. The `${VARIABLE}` syntax in Docker Compose pulls values from a local-only `.env` file.
-- **IAP (Identity-Aware Proxy):** The infrastructure utilizes Cloudflare Access as an authentication layer. Users must pass a multi-factor email verification before traffic is allowed to reach the internal NGINX Proxy.
-- **Service Isolation:** Each application is isolated within its own container, and only the Reverse Proxy is allowed to communicate with the Cloudflare Tunnel.
-
----
+This repository contains infrastructure configuration and documentation only. Application source code for the portfolio service is maintained separately in its own repository.
+For Portfolio Application : [portfolio-app](https://github.com/pratikbhattarai76/portfolio-app)
