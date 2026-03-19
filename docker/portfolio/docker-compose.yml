@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   portfolio-app:
     image: pratikbhattarai76/portfolio-app:latest
