@@ -7,9 +7,6 @@ services:
       - .env
     networks:
       - docker-proxy
-    labels:
-      - "wud.watch=true"
-      - "wud.watch.digest=true"
 
 networks:
   docker-proxy:
