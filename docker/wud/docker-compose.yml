@@ -1,0 +1,12 @@
+services:
+  wud:
+    image: getwud/wud
+    container_name: wud
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./store:/store
+    environment:
+      - WUD_WATCHER_LOCAL_CRON=0 */6 * * *
+      - TZ=Asia/Kathmandu
+      - WUD_WATCHER_LOCAL_WATCHBYDEFAULT=false
