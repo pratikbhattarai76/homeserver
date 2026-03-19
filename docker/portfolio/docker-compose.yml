@@ -1,6 +1,6 @@
 services:
   portfolio-app:
-    image: pratikbhattarai76/portfolio-app:latest
+    image: ghcr.io/pratikbhattarai76/portfolio-app:latest
     container_name: portfolio-app
     restart: unless-stopped
     env_file:
