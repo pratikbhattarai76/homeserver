@@ -150,11 +150,33 @@ This infrastructure integrates with a **pull-based deployment model**:
 
 ```text
 .
-├── docker/
-├── docs/
-├── scripts/
-│   └── update-portfolio.sh
-└── README.md
+├── docker
+│   ├── cloudflared
+│   │   └── docker-compose.yml
+│   ├── monitoring
+│   │   ├── docker-compose.yml
+│   │   └── prometheus
+│   │       └── prometheus.yml
+│   ├── nextcloud
+│   │   └── docker-compose.yml
+│   ├── nginx-proxy-manager
+│   │   └── docker-compose.yml
+│   ├── portainer
+│   │   └── docker-compose.yml
+│   ├── portfolio
+│   │   └── docker-compose.yml
+│   ├── uptime-kuma
+│   │   └── docker-compose.yml
+│   └── vaultwarden
+│       └── docker-compose.yml
+├── docs
+│   ├── architecture.drawio
+│   └── architecture.png
+├── README.md
+└── scripts
+    └── update-portfolio.sh
+
+
 ```
 
 ---
