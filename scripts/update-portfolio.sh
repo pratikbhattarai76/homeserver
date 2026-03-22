@@ -20,17 +20,13 @@ LOG_FILE="/home/pratikserver/scripts/update-portfolio.log"
 
   if [ "${OLD_IMAGE_ID:-}" != "${NEW_IMAGE_ID:-}" ]; then
     echo "Image changed. Recreating $SERVICE_NAME..."
+    docker compose up -d "$SERVICE_NAME"
   else
     echo "Same Image: Image Unchanged."
+    echo "Skipping recreate."
   fi
 
-  docker compose up -d "$SERVICE_NAME"
-
-  echo "Current container status: "
+  echo "Current container status:"
   docker compose ps
-
   echo
 } >> "$LOG_FILE" 2>&1
-
-
-
