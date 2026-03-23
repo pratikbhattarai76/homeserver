@@ -31,7 +31,6 @@
         owner: pratikserver
         group: pratikserver
         mode: preserve
-        backup: true
 
     - name: Copy scripts directory to server
       copy:
@@ -40,7 +39,6 @@
         owner: pratikserver
         group: pratikserver
         mode: preserve
-        backup: true
 
     - name: Ensure portfolio bash script is executable
       file:
