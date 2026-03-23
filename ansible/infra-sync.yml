@@ -1,4 +1,4 @@
-- name: Sync ync of the infrastructure required files
+- name: Sync of the infrastructure required files
   hosts: homelab
   become: true
 
@@ -42,8 +42,8 @@
 
     - name: Copy monitoring env file
       copy:
-        src: "{{ local_repo_path}}/docker/monitoring/.env"
-        dest: "{{ remote_docker_path}}/docker/monitoring.env"
+        src: "{{ local_repo_path }}/docker/monitoring/.env"
+        dest: "{{ remote_docker_path }}/monitoring/.env"
         owner: pratikserver
         group: pratikserver
         mode: "0600"
@@ -52,8 +52,8 @@
 
     - name: Copy cloudflared env file
       copy:
-        src: "{{ local_repo_path}}/docker/cloudflared/.env"
-        dest: "{{ remote_docker_path}}/docker/cloudflared.env"
+        src: "{{ local_repo_path }}/docker/cloudflared/.env"
+        dest: "{{ remote_docker_path }}/cloudflared/.env"
         owner: pratikserver
         group: pratikserver
         mode: "0600"
@@ -62,8 +62,8 @@
 
     - name: Copy nextcloud env file
       copy:
-        src: "{{ local_repo_path}}/docker/nextcloud/.env"
-        dest: "{{ remote_docker_path}}/docker/nextcloud.env"
+        src: "{{ local_repo_path }}/docker/nextcloud/.env"
+        dest: "{{ remote_docker_path }}/nextcloud/.env"
         owner: pratikserver
         group: pratikserver
         mode: "0600"
@@ -72,8 +72,8 @@
 
     - name: Copy portfolio env file
       copy:
-        src: "{{ local_repo_path}}/docker/portfolio/.env"
-        dest: "{{ remote_docker_path}}/docker/portfolio.env"
+        src: "{{ local_repo_path }}/docker/portfolio/.env"
+        dest: "{{ remote_docker_path }}/portfolio/.env"
         owner: pratikserver
         group: pratikserver
         mode: "0600"
