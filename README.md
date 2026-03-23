@@ -4,7 +4,7 @@ A self-hosted private cloud and homelab infrastructure project focused on secure
 
 ## Architecture Diagram
 
-![Pratik-Labs Architecture](docs/architecture.png)
+![Pratik-Labs Architecture](docs/architecture/architecture.png)
 
 ---
 
