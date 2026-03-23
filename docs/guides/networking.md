@@ -22,4 +22,4 @@ User -> Cloudflare -> Cloudflare Tunnel -> Nginx Proxy Manager -> Docker Service
 ## Design Decisions
 - No public application ports exposed
 - Internal services are isolated
-- Communication vis Docker DNS (Service Names)
+- Communication via Docker DNS (Service Names)
