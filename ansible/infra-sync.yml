@@ -1,4 +1,4 @@
-- name: Test safe sync of the server required files
+- name: Sync ync of the infrastructure required files
   hosts: homelab
   become: true
 
@@ -39,6 +39,46 @@
         owner: pratikserver
         group: pratikserver
         mode: preserve
+
+    - name: Copy monitoring env file
+      copy:
+        src: "{{ local_repo_path}}/docker/monitoring/.env"
+        dest: "{{ remote_docker_path}}/docker/monitoring.env"
+        owner: pratikserver
+        group: pratikserver
+        mode: "0600"
+        force: yes
+      ignore_errors: true
+
+    - name: Copy cloudflared env file
+      copy:
+        src: "{{ local_repo_path}}/docker/cloudflared/.env"
+        dest: "{{ remote_docker_path}}/docker/cloudflared.env"
+        owner: pratikserver
+        group: pratikserver
+        mode: "0600"
+        force: yes
+      ignore_errors: true
+
+    - name: Copy nextcloud env file
+      copy:
+        src: "{{ local_repo_path}}/docker/nextcloud/.env"
+        dest: "{{ remote_docker_path}}/docker/nextcloud.env"
+        owner: pratikserver
+        group: pratikserver
+        mode: "0600"
+        force: yes
+      ignore_errors: true
+
+    - name: Copy portfolio env file
+      copy:
+        src: "{{ local_repo_path}}/docker/portfolio/.env"
+        dest: "{{ remote_docker_path}}/docker/portfolio.env"
+        owner: pratikserver
+        group: pratikserver
+        mode: "0600"
+        force: yes
+      ignore_errors: true
 
     - name: Ensure portfolio bash script is executable
       file:
