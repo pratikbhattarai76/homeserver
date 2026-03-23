@@ -1,0 +1,49 @@
+- name: Test safe sync of the server required files
+  hosts: homelab
+  become: true
+
+  vars:
+    local_repo_path: /home/pratik/devops/private-cloud-infrastructure
+    remote_docker_path: /home/pratikserver/docker
+    remote_scripts_path: /home/pratikserver/scripts
+
+  tasks:
+    - name: Ensure docker directory exists
+      file:
+        path: "{{ remote_docker_path }}"
+        state: directory
+        owner: pratikserver
+        group: pratikserver
+        mode: "0755"
+
+    - name: Ensure scripts directory exists
+      file:
+        path: "{{ remote_scripts_path }}"
+        state: directory
+        owner: pratikserver
+        group: pratikserver
+        mode: "0755"
+
+    - name: Copy docker directory to server
+      copy:
+        src: "{{ local_repo_path }}/docker/"
+        dest: "{{ remote_docker_path }}/"
+        owner: pratikserver
+        group: pratikserver
+        mode: preserve
+        backup: true
+
+    - name: Copy scripts directory to server
+      copy:
+        src: "{{ local_repo_path }}/scripts/"
+        dest: "{{ remote_scripts_path }}/"
+        owner: pratikserver
+        group: pratikserver
+        mode: preserve
+        backup: true
+
+    - name: Ensure portfolio bash script is executable
+      file:
+        path: "{{ remote_scripts_path }}/update-portfolio.sh"
+        mode: "0755"
+      ignore_errors: true
