@@ -1,0 +1,37 @@
+- name: Deploy portainer
+  hosts: homelab
+  become: true
+
+  vars:
+    portainer_path: /home/pratikserver/docker/portainer
+
+  tasks:
+    - name: Check directory exists
+      stat:
+        path: "{{ portainer_path }}"
+      register: directory_register_record
+
+    - name: Fail if directory missing
+      fail:
+        msg: "Portainer directory not found"
+      when: not directory_register_record.stat.exists
+
+    - name: Check docker-compose.yml exists
+      stat:
+        path: "{{ portainer_path }}/docker-compose.yml"
+      register: compose_register_record
+
+    - name: Fail if docker-compose.yml missing
+      fail:
+        msg: "Portainer docker-compose.yml missing"
+      when: not compose_register_record.stat.exists
+
+    - name: Pull latest image
+      command: docker compose pull
+      args:
+        chdir: "{{ portainer_path }}"
+
+    - name: Start/update container
+      command: docker compose up -d
+      args:
+        chdir: "{{ portainer_path }}"
