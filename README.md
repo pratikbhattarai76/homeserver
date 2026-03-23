@@ -145,7 +145,7 @@ To improve consistency and reduce manual configuration, Ansible is used to autom
 
 - `infra-sync.yml` -> Synchronizes Docker configurations and scripts to the server
 - `deploy-all.yml` -> Validates and deploys all services
-- `deploy/` -> Contains service-specific deployment playbooks (e.g., portfolio, nextcloud)
+- `individual/` -> Contains service-specific deployment playbooks (e.g., portfolio, nextcloud)
 
 ### Deployment Flow
 
