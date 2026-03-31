@@ -8,6 +8,7 @@
     scripts_path: /home/pratikserver/scripts
 
   tasks:
+    # Updating Server and Installing Packages
     - name: Update apt package cache
       apt:
         update_cache: yes
@@ -19,6 +20,29 @@
           - curl
         state: present
 
+    # Mounting the HDD
+    - name: Create mount point directory
+      file:
+        path: /mnt/storage
+        state: directory
+        mode: "0755"
+
+    - name: Mount storage disk using UUID
+      mount:
+        path: /mnt/storage
+        src: UUID=4250e634-f248-4591-b2b0-6d12919f6c8e
+        fstype: ext4
+        opts: defaults
+        state: mounted
+
+    - name: Ensure correct ownership of storage
+      file:
+        path: /mnt/storage
+        owner: "{{ server_user }}"
+        group: "{{ server_user }}"
+        recurse: yes
+
+    # Adding Docker Official Key and Installing Docker
     - name: Create Docker GPG key directory
       file:
         path: /etc/apt/keyrings
@@ -73,6 +97,7 @@
         groups: docker
         append: yes
 
+    # Creating Directories for the Docker and Script files
     - name: Create docker directory
       file:
         path: "{{ docker_path }}"
