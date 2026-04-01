@@ -6,8 +6,9 @@ The system follows a private-by-default model.
 ---
 
 ## Flow
+```text
 User -> Cloudflare -> Cloudflare Tunnel -> Nginx Proxy Manager -> Docker Services
-
+```
 ---
 
 ## Components
@@ -21,5 +22,7 @@ User -> Cloudflare -> Cloudflare Tunnel -> Nginx Proxy Manager -> Docker Service
   
 ## Design Decisions
 - No public application ports exposed
-- Internal services are isolated
-- Communication via Docker DNS (Service Names)
+- All external traffic flows throught Cloudflare Tunnel
+- Internal services are isolated using Docker Networks
+- Internal Service Communication via Docker DNS (Service Names)
+- Reverse proxy centralizes routing and access control

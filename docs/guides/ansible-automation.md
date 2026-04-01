@@ -6,7 +6,9 @@ Ansible is used to automate configuration sync and service deployment.
 ---
 
 ## Flow
-Local Repo -> Ansible Sync -> Validation -> Deployment
+```text
+Local Repo -> Ansible Sync -> Ansible Deploy -> Validation -> Docker Compose Pull/Up
+```
 
 ---
 
@@ -37,7 +39,7 @@ ansible-playbook -i inventory.ini deploy-all.yml
 ### 3. Deploy Single Service
 Deploy only one service:
 
-```
+```bash
 ansible-playbook -i inventory.ini individual/deploy-portfolio.yml
 ```
 
@@ -67,6 +69,6 @@ If any check fails -> deployment stops
 ## Summary
 
 - Safe deployment process
-- No manual SSH deployment
+- Deployment is automated over SSH through Ansible
 - Supports full and single service deployment
-- Scalable for multiple services
+- Easily extendable for additional services
