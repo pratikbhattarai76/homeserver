@@ -1,3 +1,5 @@
+# This is the third step where all of the services are ran in the server.
+
 - name: Deploy services
   hosts: homelab
   become: true

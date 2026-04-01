@@ -1,3 +1,6 @@
+# THis is the first step for the new server setup. It contains the steps of bootstrapping the server.
+# The main work is Updating Server, Mounting the HDD, Setupping the Official keys for docker, APT source for docker, and creating docker and scripts folder for placing the docker compose yml files for the services from development device.
+
 - name: Setup the new server
   hosts: homelab
   become: true
