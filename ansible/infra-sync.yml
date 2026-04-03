@@ -50,7 +50,6 @@
         group: pratikserver
         mode: "0600"
         force: yes
-      ignore_errors: true
 
     - name: Copy cloudflared env file
       copy:
@@ -60,7 +59,6 @@
         group: pratikserver
         mode: "0600"
         force: yes
-      ignore_errors: true
 
     - name: Copy nextcloud env file
       copy:
@@ -70,7 +68,6 @@
         group: pratikserver
         mode: "0600"
         force: yes
-      ignore_errors: true
 
     - name: Copy portfolio env file
       copy:
@@ -80,10 +77,8 @@
         group: pratikserver
         mode: "0600"
         force: yes
-      ignore_errors: true
 
     - name: Ensure portfolio bash script is executable
       file:
         path: "{{ remote_scripts_path }}/update-portfolio.sh"
         mode: "0755"
-      ignore_errors: true
