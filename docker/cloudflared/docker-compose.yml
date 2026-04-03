@@ -1,7 +1,7 @@
 services:
   tunnel:
     container_name: cloudflared-tunnel
-    image: cloudflare/cloudflared:latest
+    image: cloudflared/cloudflared:1826-d2a87e9b9345
     restart: unless-stopped
     command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
     networks:

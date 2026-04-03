@@ -1,7 +1,7 @@
 services:
   vaultwarden:
     container_name: vaultwarden
-    image: vaultwarden/server:latest
+    image: vaultwarden/server:1.35.4-alpine
     restart: unless-stopped
     environment:
       - SIGNUPS_ALLOWED=false

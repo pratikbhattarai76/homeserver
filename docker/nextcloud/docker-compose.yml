@@ -1,6 +1,6 @@
 services:
   nextcloud-db:
-    image: mariadb:lts-ubi9
+    image: mariadb:12.2.2-noble
     container_name: nextcloud-db
     restart: unless-stopped
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
@@ -15,7 +15,7 @@ services:
       - docker-proxy
 
   nextcloud-app:
-    image: nextcloud:latest
+    image: nextcloud:32.0.8-apache
     container_name: nextcloud-app
     restart: unless-stopped
     depends_on:
