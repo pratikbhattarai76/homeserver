@@ -1,9 +1,9 @@
-# THis is the first step for the new server setup. It contains the steps of bootstrapping the server.
-# The main work is Updating Server, Mounting the HDD, Setupping the Official keys for docker, APT source for docker, and creating docker and scripts folder for placing the docker compose yml files for the services from development device.
-
 - name: Setup the new server
   hosts: homelab
   become: true
+
+  collections:
+    - community.docker
 
   vars:
     server_user: pratikserver
@@ -13,11 +13,11 @@
   tasks:
     # Updating Server and Installing Packages
     - name: Update apt package cache
-      apt:
+      ansible.builtin.apt:
         update_cache: yes
 
     - name: Install required packages
-      apt:
+      ansible.builtin.apt:
         name:
           - ca-certificates
           - curl
@@ -25,13 +25,13 @@
 
     # Mounting the HDD
     - name: Create mount point directory
-      file:
+      ansible.builtin.file:
         path: /mnt/storage
         state: directory
         mode: "0755"
 
     - name: Mount storage disk using UUID
-      mount:
+      ansible.builtin.mount:
         path: /mnt/storage
         src: UUID=4250e634-f248-4591-b2b0-6d12919f6c8e
         fstype: ext4
@@ -39,7 +39,7 @@
         state: mounted
 
     - name: Ensure correct ownership of storage
-      file:
+      ansible.builtin.file:
         path: /mnt/storage
         owner: "{{ server_user }}"
         group: "{{ server_user }}"
@@ -47,19 +47,19 @@
 
     # Adding Docker Official Key and Installing Docker
     - name: Create Docker GPG key directory
-      file:
+      ansible.builtin.file:
         path: /etc/apt/keyrings
         state: directory
         mode: "0755"
 
     - name: Add Docker GPG key
-      get_url:
+      ansible.builtin.get_url:
         url: https://download.docker.com/linux/ubuntu/gpg
         dest: /etc/apt/keyrings/docker.asc
         mode: "0644"
 
     - name: Add Docker apt repository
-      copy:
+      ansible.builtin.copy:
         dest: /etc/apt/sources.list.d/docker.sources
         content: |
           Types: deb
@@ -70,11 +70,11 @@
         mode: "0644"
 
     - name: Update apt cache after adding Docker repo
-      apt:
+      ansible.builtin.apt:
         update_cache: yes
 
     - name: Install Docker Engine and plugins
-      apt:
+      ansible.builtin.apt:
         name:
           - docker-ce
           - docker-ce-cli
@@ -84,25 +84,38 @@
         state: present
 
     - name: Ensure Docker is running
-      service:
+      ansible.builtin.service:
         name: docker
         state: started
         enabled: yes
 
     - name: Ensure docker group exists
-      group:
+      ansible.builtin.group:
         name: docker
         state: present
 
     - name: Add server user to docker group
-      user:
+      ansible.builtin.user:
         name: "{{ server_user }}"
         groups: docker
         append: yes
 
-    # Creating Directories for the Docker and Script files
+    # Create Docker networks
+    - name: Create docker_proxy network
+      community.docker.docker_network:
+        name: docker_proxy
+        driver: bridge
+        state: present
+
+    - name: Create docker_cloudflare network
+      community.docker.docker_network:
+        name: docker_cloudflare
+        driver: bridge
+        state: present
+
+    # Creating Directories for Docker and Script files
     - name: Create docker directory
-      file:
+      ansible.builtin.file:
         path: "{{ docker_path }}"
         state: directory
         owner: "{{ server_user }}"
@@ -110,7 +123,7 @@
         mode: "0755"
 
     - name: Create scripts directory
-      file:
+      ansible.builtin.file:
         path: "{{ scripts_path }}"
         state: directory
         owner: "{{ server_user }}"
