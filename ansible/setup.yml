@@ -129,3 +129,10 @@
         owner: "{{ server_user }}"
         group: "{{ server_user }}"
         mode: "0755"
+
+    - name: Add cron job for update-portfolio script
+      ansible.builtin.cron:
+        name: "Run update-portfolio script every 30 minutes"
+        user: "{{ server_user }}"
+        minute: "*/30"
+        job: "{{ scripts_path }}/update-portfolio.sh"
