@@ -38,6 +38,10 @@
         path: /home/pratikserver/docker/vaultwarden
         needs_env: false
 
+      - name: gotify
+        path: /home/pratikserver/docker/gotify
+        needs_env: false
+
   tasks:
     # Verify service directories and fail if missing
     - name: Verify service directories exist

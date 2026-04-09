@@ -1,0 +1,13 @@
+services:
+  gotify:
+    image: gotify/server:2.9.1
+    container_name: gotify
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/data
+    networks:
+      - docker-proxy
+
+networks:
+  docker-proxy:
+    external: true
