@@ -47,7 +47,6 @@ The environment is designed with **no public application ports exposed**, where 
 ### Private Administration
 - **Remote Access:** Tailscale + SSH
 - **File Access:** SFTP over SSH
-- **Firewall:** UFW (restricted access policy)
 
 ---
 
@@ -82,6 +81,7 @@ The infrastructure follows a **private-by-default architecture**:
 | **Node Exporter** | Host-level metrics |
 | **cAdvisor** | Container-level metrics |
 | **Portainer** | Docker management UI |
+| **Gotify** | Uptime Alert |
 
 ---
 
@@ -240,4 +240,4 @@ ansible-playbook -i inventory.ini individual/deploy-portfolio.yml
 
 ## 📌 Notes
 This repository contains infrastructure configuration and documentation only. 
-The portfolio application source code is maintained seperately: [Portfolio Repository](https://github.com/pratikbhattarai76/portfolio-app-deployment-pipeline)
+The portfolio application source code is maintained seperately: [Portfolio Repository](https://github.com/pratikbhattarai76/portfolio-application-deployment)
