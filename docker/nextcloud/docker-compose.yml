@@ -31,7 +31,7 @@ services:
         condition: service_healthy
     volumes:
       - ./nextcloud-config:/var/www/html
-      - /mnt/storage:/external/files
+      - /mnt/storage:/external/storage
     environment:
       - MYSQL_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=nextcloud
@@ -51,7 +51,6 @@ services:
     networks:
       - docker-proxy
 
-# Here I created another top-level volume so that the volume is the came, incase I mistakely type something in the volumes in the nextcloud-db and it create the new volume with an empty database
 volumes:
   nextcloud-db-data:
 
