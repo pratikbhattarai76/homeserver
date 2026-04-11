@@ -1,0 +1,9 @@
+# Ansible inventory for the homelab.
+# Copy this file to inventory.ini and fill in your own values.
+
+[homelab]
+# Replace with your server's LAN IP or hostname
+local ansible_host=192.168.1.X ansible_user=YOUR_SERVER_USER ansible_ssh_private_key_file=/path/to/your/ssh/key
+
+# Optional: same server reachable over a private mesh network (e.g. Tailscale, WireGuard)
+vpn ansible_host=100.X.X.X ansible_user=YOUR_SERVER_USER ansible_ssh_private_key_file=/path/to/your/ssh/key

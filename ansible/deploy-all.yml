@@ -26,10 +26,6 @@
         path: /home/pratikserver/docker/nginx-proxy-manager
         needs_env: false
 
-      - name: portainer
-        path: /home/pratikserver/docker/portainer
-        needs_env: false
-
       - name: uptime-kuma
         path: /home/pratikserver/docker/uptime-kuma
         needs_env: false

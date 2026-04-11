@@ -33,7 +33,7 @@ The environment is designed with **no public application ports exposed**, where 
 ## 🏗️ Core Architecture
 
 ### Ingress & Access
-- **Domain:** `pratik-labs.xyz
+- **Domain:** `pratik-labs.xyz`
 - **DNS / Edge:** Cloudflare
 - **Public Ingress:** Cloudflare Tunnel (`cloudflared`)
 - **Identity Layer:** Cloudflare Access
@@ -240,4 +240,4 @@ ansible-playbook -i inventory.ini individual/deploy-portfolio.yml
 
 ## 📌 Notes
 This repository contains infrastructure configuration and documentation only. 
-The portfolio application source code is maintained seperately: [Portfolio Repository](https://github.com/pratikbhattarai76/portfolio-application-deployment)
+The portfolio application source code is maintained separately: [Portfolio Repository](https://github.com/pratikbhattarai76/portfolio-application-deployment)

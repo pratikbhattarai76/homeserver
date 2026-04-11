@@ -1,2 +1,6 @@
 .env
+ansible/inventory.ini
+
+*.swp
+
 

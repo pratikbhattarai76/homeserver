@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     volumes:
-      - ./db-data:/var/lib/mysql
+      - nextcloud-db-data:/var/lib/mysql
     environment:
       - MARIADB_DATABASE=nextcloud
       - MARIADB_USER=nextcloud
@@ -31,7 +31,7 @@ services:
         condition: service_healthy
     volumes:
       - ./nextcloud-config:/var/www/html
-      - /mnt/storage/Photos/Pictures:/var/www/html/data/${NC_ADMIN_USER}/files/Pictures
+      - /mnt/storage:/external/files
     environment:
       - MYSQL_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=nextcloud
@@ -47,9 +47,13 @@ services:
       retries: 5
       start_period: 60s
     mem_limit: 2g
-    cpu_limit: 2.0
+    cpus: 2.0
     networks:
       - docker-proxy
+
+# Here I created another top-level volume so that the volume is the came, incase I mistakely type something in the volumes in the nextcloud-db and it create the new volume with an empty database
+volumes:
+  nextcloud-db-data:
 
 networks:
   docker-proxy:
