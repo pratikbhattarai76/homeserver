@@ -12,7 +12,7 @@ services:
       - MARIADB_PASSWORD=${DB_PASSWORD}
       - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
     healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -25,7 +25,8 @@ services:
     container_name: nextcloud-app
     restart: unless-stopped
     depends_on:
-      - nextcloud-db
+      nextcloud-db:
+        condition: service_healthy
     volumes:
       - ./nextcloud-config:/var/www/html
       - /mnt/storage/Photos/Pictures:/var/www/html/data/${NC_ADMIN_USER}/files/Pictures
@@ -37,6 +38,12 @@ services:
       - NEXTCLOUD_ADMIN_USER=${NC_ADMIN_USER}
       - NEXTCLOUD_ADMIN_PASSWORD=${NC_ADMIN_PASSWORD}
       - NEXTCLOUD_TRUSTED_DOMAINS=${NC_TRUSTED_DOMAIN}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/status.php"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
     networks:
       - docker-proxy
 
