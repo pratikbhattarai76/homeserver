@@ -13,6 +13,12 @@ services:
     networks:
       - docker-proxy
       - docker-cloudflared
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:81/api/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 networks:
   docker-proxy:
