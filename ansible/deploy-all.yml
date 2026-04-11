@@ -1,95 +1,79 @@
-# This is the third step where all of the services are ran in the server.
+# This is the third step where all of my services are ran in the server. Each service uses the shared deploy-service.yml task file. Tags let me target a single service from the command line, for example: ansible-playbook -i inventory.ini deploy-all.yml --tags monitoring
+
 
 - name: Deploy services
   hosts: homelab
   become: true
 
-  vars:
-    services:
-      - name: cloudflared
-        path: /home/pratikserver/docker/cloudflared
-        needs_env: true
-
-      - name: monitoring
-        path: /home/pratikserver/docker/monitoring
-        needs_env: true
-
-      - name: nextcloud
-        path: /home/pratikserver/docker/nextcloud
-        needs_env: true
-
-      - name: portfolio
-        path: /home/pratikserver/docker/portfolio
-        needs_env: true
-
-      - name: nginx-proxy-manager
-        path: /home/pratikserver/docker/nginx-proxy-manager
-        needs_env: false
-
-      - name: uptime-kuma
-        path: /home/pratikserver/docker/uptime-kuma
-        needs_env: false
-
-      - name: vaultwarden
-        path: /home/pratikserver/docker/vaultwarden
-        needs_env: false
-
-      - name: gotify
-        path: /home/pratikserver/docker/gotify
-        needs_env: false
-
   tasks:
-    # Verify service directories and fail if missing
-    - name: Verify service directories exist
-      stat:
-        path: "{{ item.path }}"
-      register: service_directory_register_record
-      loop: "{{ services }}"
+    - name: Deploy cloudflared
+      import_tasks: deploy-service.yml
+      vars:
+        service_name: cloudflared
+        service_path: /home/pratikserver/docker/cloudflared
+        service_needs_env: true
+      tags:
+        - cloudflared
 
-    - name: Fail if service directory is missing
-      fail:
-        msg: "Service directory missing: {{ item.item.path }}"
-      when: not item.stat.exists
-      loop: "{{ service_directory_register_record.results }}"
+    - name: Deploy monitoring
+      import_tasks: deploy-service.yml
+      vars:
+        service_name: monitoring
+        service_path: /home/pratikserver/docker/monitoring
+        service_needs_env: true
+      tags:
+        - monitoring
 
-    # Verify docker-compose files and fail if missing
-    - name: Verify docker-compose files exist
-      stat:
-        path: "{{ item.path }}/docker-compose.yml"
-      register: compose_file_register_record
-      loop: "{{ services }}"
+    - name: Deploy nextcloud
+      import_tasks: deploy-service.yml
+      vars:
+        service_name: nextcloud
+        service_path: /home/pratikserver/docker/nextcloud
+        service_needs_env: true
+      tags:
+        - nextcloud
 
-    - name: Fail if docker-compose.yml is missing
-      fail:
-        msg: "docker-compose.yml missing in {{ item.item.path }}"
-      when: not item.stat.exists
-      loop: "{{ compose_file_register_record.results }}"
+    - name: Deploy portfolio
+      import_tasks: deploy-service.yml
+      vars:
+        service_name: portfolio
+        service_path: /home/pratikserver/docker/portfolio
+        service_needs_env: true
+      tags:
+        - portfolio
 
-    # Verify required .env files and fail if missing
-    - name: Verify .env files for services that require them
-      stat:
-        path: "{{ item.path }}/.env"
-      register: env_file_register_record
-      loop: "{{ services }}"
-      when: item.needs_env
+    - name: Deploy nginx-proxy-manager
+      import_tasks: deploy-service.yml
+      vars:
+        service_name: nginx-proxy-manager
+        service_path: /home/pratikserver/docker/nginx-proxy-manager
+        service_needs_env: false
+      tags:
+        - nginx-proxy-manager
 
-    - name: Fail if required .env file is missing
-      fail:
-        msg: ".env missing in {{ item.item.path }}"
-      when:
-        - item.item.needs_env
-        - not item.stat.exists
-      loop: "{{ env_file_register_record.results }}"
+    - name: Deploy uptime-kuma
+      import_tasks: deploy-service.yml
+      vars:
+        service_name: uptime-kuma
+        service_path: /home/pratikserver/docker/uptime-kuma
+        service_needs_env: false
+      tags:
+        - uptime-kuma
 
-    # Pull latest images and start/update services
-    - name: Pull latest images
-      command: docker compose pull
-      args:
-        chdir: "{{ item.path }}"
-      loop: "{{ services }}"
+    - name: Deploy vaultwarden
+      import_tasks: deploy-service.yml
+      vars:
+        service_name: vaultwarden
+        service_path: /home/pratikserver/docker/vaultwarden
+        service_needs_env: false
+      tags:
+        - vaultwarden
 
-    - name: Start/update
-      command: docker compose up -d
-      args:
-        chdir: "{{ item.path }}"
-      loop: "{{ services }}"
+    - name: Deploy gotify
+      import_tasks: deploy-service.yml
+      vars:
+        service_name: gotify
+        service_path: /home/pratikserver/docker/gotify
+        service_needs_env: false
+      tags:
+        - gotify

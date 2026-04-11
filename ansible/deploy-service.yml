@@ -1,0 +1,43 @@
+# This file holds the shared deployment steps used by deploy-all.yml.
+
+# Verify service directory exists
+- name: Check directory exists
+  stat:
+    path: "{{ service_path }}"
+  register: directory_register_record
+
+- name: Fail if directory missing
+  fail:
+    msg: "{{ service_name }} directory not found at {{ service_path }}"
+  when: not directory_register_record.stat.exists
+
+# Verify docker-compose file exists
+- name: Check docker-compose.yml exists
+  stat:
+    path: "{{ service_path }}/docker-compose.yml"
+  register: compose_register_record
+
+- name: Fail if docker-compose.yml missing
+  fail:
+    msg: "{{ service_name }} docker-compose.yml missing"
+  when: not compose_register_record.stat.exists
+
+# Verify .env file exists if the service needs one
+- name: Check .env exists
+  stat:
+    path: "{{ service_path }}/.env"
+  register: env_register_record
+  when: service_needs_env
+
+- name: Fail if .env missing
+  fail:
+    msg: "{{ service_name }} .env missing"
+  when:
+    - service_needs_env
+    - not env_register_record.stat.exists
+
+# Start or update the container
+- name: Start/update container
+  command: docker compose up -d
+  args:
+    chdir: "{{ service_path }}"
