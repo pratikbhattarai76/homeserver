@@ -80,7 +80,6 @@ The infrastructure follows a **private-by-default architecture**:
 | **Grafana** | Metrics visualization |
 | **Node Exporter** | Host-level metrics |
 | **cAdvisor** | Container-level metrics |
-| **Portainer** | Docker management UI |
 | **Gotify** | Uptime Alert |
 
 ---
@@ -145,13 +144,21 @@ To improve consistency and reduce manual configuration, Ansible is used to autom
 
 - `infra-sync.yml` -> Synchronizes Docker configurations and scripts to the server
 - `deploy-all.yml` -> Validates and deploys all services
-- `individual/` -> Contains service-specific deployment playbooks (e.g., portfolio, nextcloud)
+- `deploy-service.yml` -> Contains the shared service deployment with `deploy-all.yml`
 
 ### Deployment Flow
 
 1. Infrastructure files are synced to the server
 2. Service configurations are validated (directory, compose file, environment variables)
 3. Containers are updated using Docker Compose
+
+### Tag-Based Deployment
+
+Services share a single deployment procedure (`deploy-service.yml`) imported by `deploy-all.yml` once per service. Each service is tagged with its name, so a single service can be deployed without running the whole stack:
+
+```bash
+ansible-playbook -i inventory.ini deploy-all.yml --tags monitoring
+```
 
 ### Key Features
 
@@ -175,34 +182,21 @@ ansible-playbook -i inventory.ini individual/deploy-portfolio.yml
 
 ---
 
-## ⚙️ Operations Workflow
-
-1. Configuration is version-controlled in GitHub
-2. Infrastructure changes are synchronized to the server
-3. Services are deployed via Docker Compose
-4. Application updates are handled via automated pull-based deployment
-
----
-
 ## 📁 Repository Structure
 
 ```text
 .
 ├── ansible
 │   ├── deploy-all.yml
-│   ├── individual
-│   │   ├── deploy-cloudflared.yml
-│   │   ├── deploy-monitoring.yml
-│   │   ├── deploy-nextcloud.yml
-│   │   ├── deploy-nginx-proxy-manager.yml
-│   │   ├── deploy-portainer.yml
-│   │   ├── deploy-portfolio.yml
-│   │   ├── deploy-uptime-kuma.yml
-│   │   └── deploy-vaultwarden.yml
+│   ├── deploy-service.yml
 │   ├── infra-sync.yml
-│   └── inventory.ini
+│   ├── inventory.ini
+│   ├── inventory.ini.example
+│   └── setup.yml
 ├── docker
 │   ├── cloudflared
+│   │   └── docker-compose.yml
+│   ├── gotify
 │   │   └── docker-compose.yml
 │   ├── monitoring
 │   │   ├── docker-compose.yml
@@ -211,8 +205,6 @@ ansible-playbook -i inventory.ini individual/deploy-portfolio.yml
 │   ├── nextcloud
 │   │   └── docker-compose.yml
 │   ├── nginx-proxy-manager
-│   │   └── docker-compose.yml
-│   ├── portainer
 │   │   └── docker-compose.yml
 │   ├── portfolio
 │   │   └── docker-compose.yml
@@ -225,14 +217,26 @@ ansible-playbook -i inventory.ini individual/deploy-portfolio.yml
 │   │   ├── architecture.drawio
 │   │   └── architecture.png
 │   └── guides
+│       ├── ansible-automation.md
 │       ├── ci-cd.md
 │       ├── decisions.md
-│       ├── deployment-flow.md
 │       ├── networking.md
 │       └── services.md
 ├── README.md
+├── screenshots
+│   ├── 01-docker-ps.png
+│   ├── 02-docker-networks.png
+│   ├── 03-portainer.png
+│   ├── 04-nginx-proxy.png
+│   ├── 05-grafana-node-exporter.png
+│   ├── 06-grafana-cadvisor.png
+│   ├── 07-uptime-kuma.png
+│   ├── 08-cloudflare-dns.png
+│   ├── 09-cloudflare-access-policy.png
+│   └── 10-cloudflare-access-applications.png
 └── scripts
     └── update-portfolio.sh
+
 
 ```
 
