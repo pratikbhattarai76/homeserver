@@ -14,6 +14,7 @@ Cloudflare also handles TLS certificates, DDoS protection, and provides Cloudfla
 Every service runs in its own container. This gives service isolation, consistent environments across the server and local deployment, and easy cleanup when something goes wrong. Docker Compose handles multi-container coordination for services that needs it (like Nextcloud and its database, Monitoring Stack)
 
 ---
+
 ## Why Nginx Proxy Manager?
 NPM acts as the internal reverse proxy between Cloudflare Tunnel and the backend services. The tunnel forwards request to NPM, and NPM routes to the correct container based on the hostname.
 
@@ -22,6 +23,7 @@ Having NPM as a separete layer from the tunnel means I can change internal routi
 NPM sits on both Docker networks (`docker-cloudflared` and `docker-proxy`) which is what makes it the bridge between the public ingress layer and the internal service layer.
 
 ---
+
 ## Why Pull-Based Deployment?
 The portfolio application is deployed using a pull-based model. A bash script runs on the server every 30 minutes via cron, pulls the latest image from GHCR, compares image IDs, and recreates the container only if something changed.
 
