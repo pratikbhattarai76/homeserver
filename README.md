@@ -23,7 +23,7 @@ The environment is designed with **no public application ports exposed**, where 
 - **Host:** Custom Home Server
 - **CPU:** Intel i7-4770
 - **RAM:** 16GB DDR3
-- **System Drive:** 120GB SSD
+- **System Drive:** 128GB SSD
 - **Data Drive:** 1TB HDD
 - **OS:** Ubuntu Server 24.04 LTS
 - **Admin Workstation:** Arch Linux Laptop
