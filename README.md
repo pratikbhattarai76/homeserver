@@ -1,5 +1,7 @@
 # 🏠 Private Cloud Infrastructure
 
+> **NOTE** This project represents the Phase 1 of my homelab journey - a Docker Compose-based private cloud. The infrastructure has since evolved into a Kubernetes-based platform with GitOps, and automated CI/CD, See [k8s-hmelab-platform](https://gitgub.com/pratikbhattarai76/k8s-homelab-platform) for the current setup.
+
 A self-hosted private cloud and homelab infrastructure project focused on secure remote access, containerized service deployment, reverse-proxy-based ingress, and observability.
 
 ## Architecture Diagram
@@ -245,3 +247,21 @@ ansible-playbook -i inventory.ini individual/deploy-portfolio.yml
 ## 📌 Notes
 This repository contains infrastructure configuration and documentation only. 
 The portfolio application source code is maintained separately: [Portfolio Repository](https://github.com/pratikbhattarai76/portfolio-application-deployment)
+
+---
+
+## Evolution: Docker Compose → Kubernetes
+
+This project served as the foundation for learning containerization, networking, reverse proxies, and infastructure-as-code. The concepts and patterns built here - Cloudflare Tunnel ingress, Ansible automation, pull-based deployment, secrets management - is carried into the next phase.
+
+The homelab has since been rebuilt on Kubernetes (k3s) with:
+
+- **Argo CD:** for GitOps (replacing manual Docker Compose deployments)
+- **Helm:** for complex app management (replacing hand-written compose files for monitoring)
+- **Traefik Ingress:** replacing Nginx Proxy Manager
+- **Automated CI/CD pipeline:** where pushing code triggers image builds, manifest updates, and deployments with zero manual steps.
+- **CloudNativePG** for database management (replacing MariaDB)
+
+The kubernetes platform lives at: [k8s-homelab-platform](https://github.com/pratikbhattarai76/k8s-homelab-platform)
+
+This repository remains as a reference for the Docker Compose approach and the architectural decisions that informes the migration.
