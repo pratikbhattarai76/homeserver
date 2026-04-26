@@ -3,8 +3,8 @@ The portfolio application is the only service in this stack with a CI/CD pipelin
 
 ---
 
-## Two Repoistories, One Pipeline
-The portfolio application lives in two separete repositories that meet at GitHub Container Registry (GHCR):
+## Two Repositories, One Pipeline
+The portfolio application lives in two separate repositories that meet at GitHub Container Registry (GHCR):
 
 - [portfolio-application-deployment](https://github.com/pratikbhattarai76/portfolio-application-deployment) - application source code, Dockerfile, and the GitHub Actions workflow that pushes the container image.
 - private-cloud-infrastructure (this repository) - the compose file, deployment script, and Ansible playbook that pull and run published image on the home server.
@@ -33,7 +33,7 @@ ghcr.io/pratikbhattarai76/portfolio-app:latest ───────────
                                                                             docker compose recreates
                                                                             container if image changed
 ```
-This seperation matters because the application repository can be developed, tested, and rebuilt without touching infrastructure. The infrastructure repo can be organized without rebuilding the application. And the container registry is the contract between them.
+This separation matters because the application repository can be developed, tested, and rebuilt without touching infrastructure. The infrastructure repo can be organized without rebuilding the application. And the container registry is the contract between them.
 
 ---
 

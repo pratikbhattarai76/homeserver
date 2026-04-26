@@ -82,9 +82,6 @@ Portainer was removed bacause it duplicated functionality that Ansible and Docke
 ---
 
 ## Ansible Refactor
-The original Ansible structure had eight individual deployment playbooks `(deploy-nextcloud.yml`, `deploy-portfolio.yml`, etc.) that were nearly identical - each one checked for the service discovery, the compose file and the env file, then ran `docker compose up -d`. The only differences between them were the service name, path, and whether an env file was required.
-
-These were refactored into a single shared task file `deploy-service.yml` that holds the deployment procedure once, and a single `deploy-all.yml` that calls it once per service with `import_tasks` and per-service tags. The individual playbooks were removed.
 The original Ansible structure had eight individual deployment playbooks (`deploy-nextcloud.yml`, `deploy-portfolio.yml`, etc.) that were nearly identical — each one checked for the service directory, the compose file, and the env file, then ran `docker compose up -d`. The only differences between them were the service name, path, and whether an env file was required.
 
 These were refactored into a single shared task file (`deploy-service.yml`) that holds the deployment procedure once, and a single `deploy-all.yml` that calls it once per service with `import_tasks` and per-service tags. The individual playbooks were removed.
