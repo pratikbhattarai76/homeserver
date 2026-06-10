@@ -10,7 +10,7 @@
       import_tasks: deploy-service.yml
       vars:
         service_name: cloudflared
-        service_path: /home/pratikserver/docker/cloudflared
+        service_path: /home/pratik/docker/cloudflared
         service_needs_env: true
       tags:
         - cloudflared
@@ -19,7 +19,7 @@
       import_tasks: deploy-service.yml
       vars:
         service_name: monitoring
-        service_path: /home/pratikserver/docker/monitoring
+        service_path: /home/pratik/docker/monitoring
         service_needs_env: true
       tags:
         - monitoring
@@ -28,7 +28,7 @@
       import_tasks: deploy-service.yml
       vars:
         service_name: nextcloud
-        service_path: /home/pratikserver/docker/nextcloud
+        service_path: /home/pratik/docker/nextcloud
         service_needs_env: true
       tags:
         - nextcloud
@@ -37,7 +37,7 @@
       import_tasks: deploy-service.yml
       vars:
         service_name: portfolio
-        service_path: /home/pratikserver/docker/portfolio
+        service_path: /home/pratik/docker/portfolio
         service_needs_env: true
       tags:
         - portfolio
@@ -46,7 +46,7 @@
       import_tasks: deploy-service.yml
       vars:
         service_name: nginx-proxy-manager
-        service_path: /home/pratikserver/docker/nginx-proxy-manager
+        service_path: /home/pratik/docker/nginx-proxy-manager
         service_needs_env: false
       tags:
         - nginx-proxy-manager
@@ -55,7 +55,7 @@
       import_tasks: deploy-service.yml
       vars:
         service_name: uptime-kuma
-        service_path: /home/pratikserver/docker/uptime-kuma
+        service_path: /home/pratik/docker/uptime-kuma
         service_needs_env: false
       tags:
         - uptime-kuma
@@ -64,7 +64,7 @@
       import_tasks: deploy-service.yml
       vars:
         service_name: vaultwarden
-        service_path: /home/pratikserver/docker/vaultwarden
+        service_path: /home/pratik/docker/vaultwarden
         service_needs_env: false
       tags:
         - vaultwarden
@@ -73,7 +73,14 @@
       import_tasks: deploy-service.yml
       vars:
         service_name: gotify
-        service_path: /home/pratikserver/docker/gotify
+        service_path: /home/pratik/docker/gotify
         service_needs_env: false
       tags:
         - gotify
+    - name: Deploy immich
+      import_tasks: deploy-service.yml
+      vars:
+        service_name: immich
+        service_dir: /opt/docker/immich
+      tags:
+        - immich

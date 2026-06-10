@@ -6,8 +6,8 @@
 
   vars:
     local_repo_path: /home/pratik/devops/private-cloud-infrastructure
-    remote_docker_path: /home/pratikserver/docker
-    remote_scripts_path: /home/pratikserver/scripts
+    remote_docker_path: /home/pratik/docker
+    remote_scripts_path: /home/pratik/scripts
 
   tasks:
     - name: Ensure docker directory exists

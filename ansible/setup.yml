@@ -6,9 +6,9 @@
     - community.docker
 
   vars:
-    server_user: pratikserver
-    docker_path: /home/pratikserver/docker
-    scripts_path: /home/pratikserver/scripts
+    server_user: pratik
+    docker_path: /home/pratik/docker
+    scripts_path: /home/pratik/scripts
 
   tasks:
     # Updating Server and Installing Packages
