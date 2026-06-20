@@ -8,6 +8,15 @@ services:
       - ${UPLOAD_LOCATION}:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
       - /mnt/storage/Photos/Pictures:/mnt/external/Pictures:ro
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
     env_file:
       - .env
     depends_on:
