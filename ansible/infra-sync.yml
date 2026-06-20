@@ -14,40 +14,40 @@
       file:
         path: "{{ remote_docker_path }}"
         state: directory
-        owner: pratikserver
-        group: pratikserver
+        owner: pratik
+        group: pratik
         mode: "0755"
 
     - name: Ensure scripts directory exists
       file:
         path: "{{ remote_scripts_path }}"
         state: directory
-        owner: pratikserver
-        group: pratikserver
+        owner: pratik
+        group: pratik
         mode: "0755"
 
     - name: Copy docker directory to server
       copy:
         src: "{{ local_repo_path }}/docker/"
         dest: "{{ remote_docker_path }}/"
-        owner: pratikserver
-        group: pratikserver
+        owner: pratik
+        group: pratik
         mode: preserve
 
     - name: Copy scripts directory to server
       copy:
         src: "{{ local_repo_path }}/scripts/"
         dest: "{{ remote_scripts_path }}/"
-        owner: pratikserver
-        group: pratikserver
+        owner: pratik
+        group: pratik
         mode: preserve
 
     - name: Copy monitoring env file
       copy:
         src: "{{ local_repo_path }}/docker/monitoring/.env"
         dest: "{{ remote_docker_path }}/monitoring/.env"
-        owner: pratikserver
-        group: pratikserver
+        owner: pratik
+        group: pratik
         mode: "0600"
         force: yes
 
@@ -55,8 +55,8 @@
       copy:
         src: "{{ local_repo_path }}/docker/cloudflared/.env"
         dest: "{{ remote_docker_path }}/cloudflared/.env"
-        owner: pratikserver
-        group: pratikserver
+        owner: pratik
+        group: pratik
         mode: "0600"
         force: yes
 
@@ -64,8 +64,8 @@
       copy:
         src: "{{ local_repo_path }}/docker/nextcloud/.env"
         dest: "{{ remote_docker_path }}/nextcloud/.env"
-        owner: pratikserver
-        group: pratikserver
+        owner: pratik
+        group: pratik
         mode: "0600"
         force: yes
 
@@ -73,8 +73,17 @@
       copy:
         src: "{{ local_repo_path }}/docker/portfolio/.env"
         dest: "{{ remote_docker_path }}/portfolio/.env"
-        owner: pratikserver
-        group: pratikserver
+        owner: pratik
+        group: pratik
+        mode: "0600"
+        force: yes
+
+    - name: Copy immich env file
+      copy:
+        src: "{{ local_repo_path }}/docker/immich/.env"
+        dest: "{{ remote_docker_path }}/immich/.env"
+        owner: pratik
+        group: pratik
         mode: "0600"
         force: yes
 

@@ -4,7 +4,7 @@ services:
     image: vaultwarden/server:1.35.4-alpine
     restart: unless-stopped
     environment:
-      - SIGNUPS_ALLOWED=false
+      - SIGNUPS_ALLOWED=true
       - DOMAIN=https://vault.pratik-labs.xyz
     volumes:
       - ./vw-data:/data
