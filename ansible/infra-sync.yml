@@ -87,6 +87,15 @@
         mode: "0600"
         force: yes
 
+    - name: Copy GitHub Runner env file
+      copy:
+        src: "{{ local_repo_path }}/docker/github-runner/.env"
+        dest: "{{ remote_docker_path }}/github-runner/.env"
+        owner: pratik
+        group: pratik
+        mode: "0600"
+        force: yes
+
     - name: Ensure portfolio bash script is executable
       file:
         path: "{{ remote_scripts_path }}/update-portfolio.sh"

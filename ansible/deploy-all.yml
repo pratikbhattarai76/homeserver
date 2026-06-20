@@ -86,3 +86,12 @@
         service_needs_env: true
       tags:
         - immich
+
+    - name: Deploy GitHub Runner
+      import_tasks: deploy-service.yml
+      vars:
+        service_name: github-runner
+        service_path: /home/pratik/docker/github-runner
+        service_needs_env: true
+      tags:
+        - github-runner
