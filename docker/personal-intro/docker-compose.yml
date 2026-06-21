@@ -1,5 +1,6 @@
 services:
   personal-intro:
+    container_name: personal-intro
     image: ghcr.io/pratikbhattarai76/personal-intro:latest
     restart: unless-stopped
     networks:
