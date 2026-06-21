@@ -1,5 +1,6 @@
 services:
   personal-intro-runner:
+    container_name: personal-intro-runner
     image: myoung34/github-runner:latest
     restart: unless-stopped
     environment:
@@ -12,6 +13,23 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/runner/personal-intro:/tmp/runner/personal-intro
       - /home/pratik/docker/personal-intro:/home/pratik/docker/personal-intro
+    networks:
+      - docker-proxy
+
+  instagram-clone-runner:
+    container_name: instagram-clone-runner
+    image: myoung34/github-runner:latest
+    restart: unless-stopped
+    environment:
+      REPO_URL: "https://github.com/pratikbhattarai76/instagram-clone"
+      ACCESS_TOKEN: "${PAT_INSTAGRAM_CLONE}"
+      RUNNER_NAME: "instagram-clone-runner"
+      RUNNER_SCOPE: "repo"
+      LABELS: "self-hosted,deploy"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/runner/instagram-clone:/tmp/runner/instagram-clone
+      - /home/pratik/docker/instagram-clone:/home/pratik/docker/instagram-clone
     networks:
       - docker-proxy
 

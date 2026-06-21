@@ -1,0 +1,11 @@
+services:
+  instagram-clone:
+    container_name: instagram-clone
+    image: ghcr.io/pratikbhattarai76/instagram-clone:latest
+    restart: unless-stopped
+    networks:
+      - docker-proxy
+
+networks:
+  docker-proxy:
+    external: true
