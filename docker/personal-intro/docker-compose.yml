@@ -1,0 +1,10 @@
+services:
+  personal-intro:
+    image: ghct.io/pratikbhattarai76/personal-intro:latest
+    restart: unless stopped
+    networks:
+      - docker-proxy
+
+networks:
+  docker-proxy:
+    external: true
