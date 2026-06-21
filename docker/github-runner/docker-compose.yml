@@ -12,6 +12,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/runner/personal-intro:/tmp/runner/personal-intro
+      - /home/pratik/docker/personal-intro:/home/pratik/docker/personal-intro
     networks:
       - docker-proxy
 
