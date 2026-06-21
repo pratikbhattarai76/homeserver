@@ -1,7 +1,7 @@
 services:
   personal-intro:
     image: ghcr.io/pratikbhattarai76/personal-intro:latest
-    restart: unless stopped
+    restart: unless-stopped
     networks:
       - docker-proxy
 
