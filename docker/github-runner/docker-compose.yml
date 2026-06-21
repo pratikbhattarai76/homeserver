@@ -1,10 +1,11 @@
 services:
   personal-intro-runner:
+    container_name: personal-intro-runner
     image: myoung34/github-runner:latest
     restart: unless-stopped
     environment:
       REPO_URL: "https://github.com/pratikbhattarai76/personal-intro"
-      ACCESS_TOKEN: "{PAT_PERSONAL_INTRO}"
+      ACCESS_TOKEN: "${PAT_PERSONAL_INTRO}"
       RUNNER_NAME: "personal-intro-runner"
       RUNNER_SCOPE: "repo"
       LABELS: "self-hosted,deploy"
